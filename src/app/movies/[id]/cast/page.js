@@ -1,4 +1,4 @@
-// src/app/movies/[id]/cast/page.js
+"use client";
 
 import React, { useEffect, useState } from 'react';
 import { fetchFromTMDB } from '../../../../lib/tmdbClient';

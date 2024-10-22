@@ -1,8 +1,10 @@
-// src/app/api/suggestions.js
-import useSWR from 'swr'
 import { fetchFromTMDB } from '../../lib/tmdbClient';
 
 export default async function handler(req, res) {
+  if (!req.query) {
+    return res.status(400).json({ error: 'Query object is missing' });
+  }
+
   const { query } = req.query;
 
   if (!query) {
@@ -10,15 +12,10 @@ export default async function handler(req, res) {
   }
 
   try {
-    // استدعاء واجهة برمجة التطبيقات الخاصة بالبحث لجلب الاقتراحات
     const data = await fetchFromTMDB(`/search/multi?query=${encodeURIComponent(query)}`);
 
     if (data && data.results) {
-      // استخراج أسماء الأفلام أو المسلسلات أو الأشخاص من النتائج
-      const suggestions = data.results.map(item => {
-        return item.title || item.name; // استخدام title للأفلام وname للمسلسلات
-      });
-
+      const suggestions = data.results.map(item => item.title || item.name);
       return res.status(200).json(suggestions);
     } else {
       return res.status(200).json([]);

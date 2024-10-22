@@ -65,8 +65,28 @@ const TVShowDetails = () => {
     <div className="bg-white dark:bg-gray-900 text-black dark:text-white min-h-screen">
       <div className="container mx-auto px-4 py-8">
         {/* TV Show details */}
-        <section className="mb-12">
-          <div className="flex flex-col lg:flex-row">
+        <section
+          className="relative"
+          style={{
+            backgroundImage: `url(https://image.tmdb.org/t/p/original${show.backdrop_path})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            width: '99.4vw',
+            marginLeft: 'calc(-50vw + 50%)',
+            marginRight: 'calc(-50vw + 50%)',
+            marginTop: 'calc(-50.5vw + 50%)',
+            opacity: 0.8,
+          }}
+        >
+          {/* الطبقة الشفافة */}
+          <div
+            className="absolute inset-0 bg-white"
+            style={{ opacity: '0.5', zIndex: 1 }}
+          ></div>
+
+          {/* المحتوى فوق الخلفية */}
+          <div className="relative z-10 flex flex-col lg:flex-row bg-opacity-75 bg-black p-8 rounded-lg shadow-lg">
             <div className="w-full lg:w-1/4 mb-8 lg:mb-0">
               <Image
                 src={`https://image.tmdb.org/t/p/w500${show.poster_path}`}
@@ -77,7 +97,7 @@ const TVShowDetails = () => {
                 layout="responsive"
               />
             </div>
-            <div className="w-full lg:w-3/4 lg:ml-8">
+            <div className="w-full lg:w-3/4 lg:ml-8 text-white">
               <h1 className="text-3xl md:text-4xl font-bold mb-2">
                 {show.name} ({new Date(show.first_air_date).getFullYear()})
               </h1>
@@ -129,23 +149,7 @@ const TVShowDetails = () => {
                 </div>
               )}
 
-              <div className="mt-8">
-                <ul className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
-                  <li className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer flex items-center">
-                    <FaList className="mr-2" /> {t('Add to list')}
-                  </li>
-                  <li className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer flex items-center">
-                    <FaHeart className="mr-2" /> {t('Favorite')}
-                  </li>
-                  <li className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer flex items-center">
-                    <FaEye className="mr-2" /> {t('Watchlist')}
-                  </li>
-                  <li className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer flex items-center">
-                    <FaStar className="mr-2" /> {t('Your rating')}
-                  </li>
-                </ul>
-              </div>
-
+              
               <button
                 onClick={openModal}
                 className="bg-gray-700 dark:hover:bg-gray-500 text-white rounded-full py-2 px-6 mt-8 flex items-center justify-center hover:bg-gray-900 border border-gray-700"
@@ -164,62 +168,54 @@ const TVShowDetails = () => {
         {/* Divider */}
         <hr className="my-8 border-t border-gray-300 dark:border-gray-700" />
 
-        {/* Full Cast & Crew */}
         <section className="mt-8">
-          <Link href={`/tv/${id}/full-cast`} className="text-black dark:text-white text-lg font-semibold border-b-2 border-black dark:border-white inline-block pb-1">
+          <Link href={`/tv/${id}/full-cast`} className="text-lg font-semibold text-blue-500 hover:underline">
             {t('Full Cast & Crew')}
           </Link>
         </section>
 
-        {/* Divider */}
-        <hr className="my-8 border-t border-gray-300 dark:border-gray-700" />
-
-        {/* Social Options */}
-        <section className="text-left">
+        {/* Social options */}
+        <section className="mt-8">
           <SocialOptions showId={id} />
         </section>
 
-        {/* Media Section */}
+        {/* Media */}
         <section className="mt-8">
           <Media showId={id} />
         </section>
 
-        {/* Recommendations Section */}
-        <section>
+        {/* Recommendations */}
+        <section className="mt-8">
           <Recommendations showId={id} />
         </section>
-
-        {/* Trailer Modal */}
-        <ReactModal
-          isOpen={modalIsOpen}
-          onRequestClose={closeModal}
-          contentLabel={t('Trailer')}
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
-          overlayClassName="fixed inset-0 bg-black bg-opacity-70"
-        >
-          {trailerKey ? (
-            <div className="relative w-full max-w-3xl">
-              <button
-                onClick={closeModal}
-                className="absolute top-2 right-2 text-white text-2xl"
-              >
-                ×
-              </button>
-              <iframe
-                width="100%"
-                height="500"
-                src={`https://www.youtube.com/embed/${trailerKey}`}
-                title="Trailer"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-            </div>
-          ) : (
-            <div className="text-white">Trailer not available</div>
-          )}
-        </ReactModal>
       </div>
+
+      {/* Trailer Modal */}
+      <ReactModal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Trailer"
+        className="bg-gray-800 p-4 rounded-md w-full max-w-2xl mx-auto my-20"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center"
+      >
+        {trailerKey && (
+          <div className="text-center">
+            <h2 className="text-xl font-bold mb-4 text-white">{show.name}</h2>
+            <iframe
+              width="100%"
+              height="300"
+              src={`https://www.youtube.com/embed/${trailerKey}`}
+              title={show.name}
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+            <button onClick={closeModal} className="mt-4 px-4 py-2 bg-red-500 text-white rounded text-sm">
+              {t('Close')}
+            </button>
+          </div>
+        )}
+      </ReactModal>
     </div>
   );
 };

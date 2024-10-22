@@ -13,7 +13,8 @@ import ReactModal from 'react-modal';
 import useAuth from '../../../lib/useAuth';
 import { useTranslation } from 'react-i18next';
 import MovieActions from '../../../components/MovieActions'; 
-import TrailerModal from '../../../components/TrailerModal'; // استيراد مكتبة i18next للترجمة
+import TrailerModal from '../../../components/TrailerModal'; 
+// استيراد مكتبة i18next للترجمة
 
 const MovieDetails = () => {
   const { id } = useParams();
@@ -171,11 +172,6 @@ const MovieDetails = () => {
           </div>
         </div>
       )}
-
-      
-        {/* تمرير movieId إلى MovieActions */}
-        <MovieActions movieId={id} />
-
               <button
                 onClick={openModal}
                 className="bg-gray-700 dark:hover:bg-gray-500 text-white rounded-full py-2 px-6 mt-8 flex items-center justify-center hover:bg-gray-900 border border-gray-700"
@@ -222,23 +218,32 @@ const MovieDetails = () => {
         
         
         {/* Modal for Trailer */}
-        <ReactModal isOpen={modalIsOpen} onRequestClose={closeModal}>
-          <div className="relative">
-            <button onClick={closeModal} className="absolute top-4 right-4 text-gray-700 hover:text-gray-900">
-              &times;
-            </button>
-            <h2 className="text-lg font-bold mb-4">{i18n.t('Trailer')}</h2>
-            <iframe
-              width="100%"
-              height="400"
-              src={`https://www.youtube.com/embed/${trailerKey}`}
-              title={movie.title}
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          </div>
-        </ReactModal>
+<ReactModal
+  isOpen={modalIsOpen}
+  onRequestClose={closeModal}
+  contentLabel="Trailer"
+  className="bg-gray-800 p-4 rounded-md w-full max-w-2xl mx-auto my-20"
+  overlayClassName="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center"
+>
+  {trailerKey && (
+    <div className="text-center">
+      <h2 className="text-xl font-bold mb-4 text-white">{movie.title}</h2>
+      <iframe
+        width="100%"
+        height="300"
+        src={`https://www.youtube.com/embed/${trailerKey}`}
+        title={movie.title}
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+      />
+      <button onClick={closeModal} className="mt-4 px-4 py-2 bg-red-500 text-white rounded text-sm">
+        Close
+      </button>
+    </div>
+  )}
+</ReactModal>
+
       </div>
     </div>
   );
